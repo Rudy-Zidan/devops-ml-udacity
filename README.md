@@ -25,18 +25,48 @@ You can find a detailed [project rubric, here](https://review.udacity.com/#!/rub
 
 ## Setup the Environment
 
-* Create a virtualenv and activate it
-* Run `make install` to install the necessary dependencies
+* Create a virtualenv and activate it.
+```bash
+  python3 -m venv ~/.devops
+  source ~/.devops/bin/activate
+```
+* Run `make install` to install the necessary dependencies, will trigger the below command.
+```bash
+  pip install --upgrade pip &&\
+		pip install -r requirements.txt
+```
 
 ### Running `app.py`
 
 1. Standalone:  `python app.py`
+    - Will run the flask app standlone without docker or kubernetes
+    - You can test by visiting "localhost:80".
 2. Run in Docker:  `./run_docker.sh`
+    - Will build the docker image.
+    - Run the flask app over port 80 and forwarding the port 80 to the container exposed port (80).
 3. Run in Kubernetes:  `./run_kubernetes.sh`
+    - You can enable kubernetes through docker app over your local machine and change the context to "docker-desktop", then you can execute it safely.
+    - Execute the following command: `kubectl config view`
+    - You should see at least one certificate-authority and server.
 
 ### Kubernetes Steps
 
 * Setup and Configure Docker locally
+  - Create an account over [docker hub](https://hub.docker.com/)
+  - Install docker, please visit this [link](https://www.docker.com/products/docker-desktop)
+  - Check for docker version: `docker --version` in your terminal.
 * Setup and Configure Kubernetes locally
+  - Install minikube:
+    - for windows check the [windows installer](https://minikube.sigs.k8s.io/docs/start/)
+    - for macos `brew cask install minikube`
+  - If you installed docker desktop, then you can just enable the kubernets through it from the settings.
+  - Check for kubectl version: `kubectl version`
 * Create Flask app in Container
+  - Run the following command: `./run_docker.sh`, make sure to set your own dockerpath inside this file.
+  - This will build and tag the docker image
+  - After you see the app is up and running, you can execute `./make_prediction.sh` to test it.
+  - You should see the predictions over STDOUT normally.
 * Run via kubectl
+  - Run the following command: `./run_kubernetes.sh`, make sure you already have a valid image with same dockerpath.
+  - This will execute the following command: `kubectl run ml-udacity --image=$dockerpath --port=80 --labels app=ml-udacity`
+  - You can update the labels to your preferences, also make sure that the image tag is used correctly `ml-udacity`.
